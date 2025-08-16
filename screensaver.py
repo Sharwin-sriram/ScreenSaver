@@ -74,7 +74,7 @@ def get_weather():
         weather_icon = ImageTk.PhotoImage(img)
         return f"{temp:.1f}°C   {CITY},{REGION}"
     except:
-        return "Weather N/A"
+        return "API FETCH ERROR"
 
 def draw_clock_text():
     canvas.delete("clock")
