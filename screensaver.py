@@ -37,7 +37,6 @@ canvas.pack(fill="both", expand=True)
 
 weather_icon = None
 
-
 def get_weather():
     global weather_icon
     try:
@@ -61,8 +60,7 @@ def get_weather():
         return f"{temp:.1f}°C   {CITY},{REGION}"
     except Exception as e:
         print("Error fetching weather:", e)
-        return "Weather N/A"
-
+        return "API Fetch Error"
 
 def draw_clock_text():
     canvas.delete("clock")
@@ -142,11 +140,9 @@ def update_weather():
     current_weather = get_weather()
     root.after(600000, update_weather)
 
-
 root.bind("<Escape>", lambda e: root.destroy())
 root.bind("<Button>", lambda e: root.destroy())
 root.bind("<Motion>", lambda e: root.destroy())
-
 
 current_weather = get_weather()
 draw_clock_text()
