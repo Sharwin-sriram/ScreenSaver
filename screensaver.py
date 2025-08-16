@@ -104,6 +104,9 @@ def update_weather():
     current_weather = get_weather()
     root.after(600000, update_weather)
 
+root.bind("<Escape>", lambda e: sys.exit())
+root.bind("<Button>", lambda e: sys.exit())
+root.bind("<Motion>", lambda e: sys.exit())
 root.bind("<Escape>", lambda e: root.destroy())
 root.bind("<Button>", lambda e: root.destroy())
 root.bind("<Motion>", lambda e: root.destroy())
