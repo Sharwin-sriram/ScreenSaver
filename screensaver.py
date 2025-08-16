@@ -3,9 +3,11 @@ import time
 import requests
 from PIL import Image, ImageTk
 from io import BytesIO
+import os
+from dotenv import load_dotenv
 
-
-API_KEY = API
+load_dotenv(dotenv_path="env/.env")
+API_KEY = os.getenv("API_KEY")
 
 LAT = 0
 LON = 0
