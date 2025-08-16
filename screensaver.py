@@ -11,9 +11,9 @@ API_KEY = os.getenv("API_KEY")
 
 LAT = 0
 LON = 0
-CITY = "API ERROR"
+CITY = ""
 REGION = ""
-URL = f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric"
+
 try:
   ipinfo = requests.get("https://ipinfo.io/json")
   data = ipinfo.json()
@@ -24,8 +24,8 @@ except:
   print("err")
 
 
-print(CITY)
-print(LAT , LON)
+#print(CITY)
+#print(LAT , LON)
 
 
 root = tk.Tk()
@@ -41,6 +41,7 @@ weather_icon = None
 def get_weather():
     global weather_icon
     try:
+        URL = f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric"
         response = requests.get(URL, timeout=5)
         data = response.json()
         if data["cod"] != 200:
@@ -57,7 +58,7 @@ def get_weather():
         img = img.resize((70, 70), Image.LANCZOS)
         weather_icon = ImageTk.PhotoImage(img)
 
-        return f"{temp:.1f}°C  {CITY},{REGION}"
+        return f"{temp:.1f}°C   {CITY},{REGION}"
     except Exception as e:
         print("Error fetching weather:", e)
         return "Weather N/A"
