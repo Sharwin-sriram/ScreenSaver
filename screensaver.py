@@ -4,15 +4,14 @@ import requests
 from PIL import Image, ImageTk
 from io import BytesIO
 
-API_KEY = "29b1ecac3a6ce1889863b52f069412f3"
 
-LAT = 11.023232
-LON = 22.824648
+API_KEY = API
+
+LAT = 0
+LON = 0
 CITY = "API ERROR"
 REGION = ""
-
 URL = f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric"
-
 try:
   ipinfo = requests.get("https://ipinfo.io/json")
   data = ipinfo.json()
@@ -53,7 +52,7 @@ def get_weather():
         icon_response = requests.get(icon_url, timeout=5)
         img_data = icon_response.content
         img = Image.open(BytesIO(img_data)).convert("RGBA")
-        img = img.resize((50, 50), Image.LANCZOS)
+        img = img.resize((70, 70), Image.LANCZOS)
         weather_icon = ImageTk.PhotoImage(img)
 
         return f"{temp:.1f}°C  {CITY},{REGION}"
@@ -72,7 +71,7 @@ def draw_clock_text():
     y = root.winfo_screenheight() // 2
 
     canvas.create_text(
-        x, y - 120,
+        x, y - 90,
         text=date,
         fill="white",
         font=("Calibri", 30, ""),
@@ -101,13 +100,13 @@ def draw_clock_text():
             start_x = x - total_w // 2
 
             canvas.create_image(
-                start_x + icon_w // 2, y + 140,
+                start_x + icon_w // 2, y + 110,
                 image=weather_icon,
                 tags="clock"
             )
 
             canvas.create_text(
-                start_x + icon_w + 10, y + 140,
+                start_x + icon_w + 10, y + 110,
                 text=current_weather,
                 fill="white",
                 font=temp_font,
@@ -116,7 +115,7 @@ def draw_clock_text():
             )
         else:
             canvas.create_text(
-                x, y + 140,
+                x, y + 110,
                 text=current_weather,
                 fill="white",
                 font=("Calibri", 32, ""),
@@ -124,7 +123,7 @@ def draw_clock_text():
             )
     else:
         canvas.create_text(
-            x, y + 120,
+            x, y + 90,
             text="Weather N/A",
             fill="white",
             font=("Calibri", 32, "bold"),
