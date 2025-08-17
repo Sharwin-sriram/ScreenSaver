@@ -59,7 +59,7 @@ if len(sys.argv) > 1:
             except ValueError:
                 sys.exit()
 else:
-    sys.exit()          # CHANGE THIS TO run_screensaver = True FOR TESTING
+    sys.exit()          # CHANGE THIS TO - run_screensaver = True //FOR TESTING
 if not run_screensaver:
     sys.exit()
     
