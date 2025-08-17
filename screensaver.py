@@ -9,6 +9,18 @@ import ctypes
 run_screensaver = False
 preview_mode = False
 preview_hwnd = None
+weather_icon = None
+
+root = tk.Tk()
+root.configure(bg="black")
+root.config(cursor="none")
+
+canvas = tk.Canvas(root, bg="black", highlightthickness=0)
+canvas.pack(fill="both", expand=True)
+
+API_KEY = ""
+IPINFO_API = "http://ip-api.com/json/"
+LAT, LON, CITY, REGION = 0, 0, "", ""
 
 if len(sys.argv) > 1:
     arg = sys.argv[1].lower()
@@ -25,36 +37,25 @@ if len(sys.argv) > 1:
             except ValueError:
                 sys.exit()
 else:
-    sys.exit()
+    run_screensaver = True
 if not run_screensaver:
     sys.exit()
-
-API_KEY = "YOUR API KEY"
-LAT, LON, CITY, REGION = 0, 0, "", ""
-
-try:
-    ipinfo = requests.get("https://ipinfo.io/json", timeout=5)
-    data = ipinfo.json()
-    LAT, LON = data["loc"].split(",")
-    CITY, REGION = data.get("city", "Unknown"), data.get("region", "")
-except:
-    LAT, LON, CITY, REGION = 0, 0, "Unknown", ""
-
-root = tk.Tk()
-
+    
 if preview_mode and preview_hwnd:
     ctypes.windll.user32.SetParent(root.winfo_id(), preview_hwnd)
     root.overrideredirect(True)
 else:
     root.attributes("-fullscreen", True)
 
-root.configure(bg="black")
-root.config(cursor="none")
 
-canvas = tk.Canvas(root, bg="black", highlightthickness=0)
-canvas.pack(fill="both", expand=True)
-
-weather_icon = None
+try:
+    ipinfo = requests.get(IPINFO_API, timeout=5)
+    data = ipinfo.json()
+    print(data)
+    LAT, LON = data["lat"], data["lon"]
+    CITY, REGION = data.get("city","Unknown"), data.get("regionName", "")
+except:
+    LAT, LON, CITY, REGION = 0, 0, "Unknown", ""
 
 def get_weather():
     global weather_icon
