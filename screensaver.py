@@ -12,11 +12,15 @@ import ctypes
 # REPLACE THE API KEY WITH YOUR OWN API KEY 
 # GET A API KEY FROM https://openweathermap.org/
 
+
+# ----------------- DONT CHANGE -----------------
 run_screensaver = False
 preview_mode = False
 preview_hwnd = None
 weather_icon = None
 
+
+# ----------------- ROOT CONFIG -----------------
 root = tk.Tk()
 root.configure(bg="black")
 root.config(cursor="none")
@@ -38,6 +42,7 @@ WEATHER_COLOR = "white"     # COLOR OF THE WEATHER UNDER THE CLOCK
 CLOCK_COLOR = "white"       # COLOR OF THE CLOCK
 AM_COLOR = "#a2a8ff"       # COLOR FOR AFTER MERIDIAN
 PM_COLOR = "#37c0f7"       # COLOR FOR POST MERIDIAN
+
 
 if len(sys.argv) > 1:
     arg = sys.argv[1].lower()
@@ -132,7 +137,8 @@ def draw_clock_text():
         text=now, 
         fill=CLOCK_COLOR,
         font=(FONT_FAMILY, CLOCK_SIZE),
-        anchor="w", tags="clock"
+        anchor="w", 
+        tags="clock"
     )
     if ampm == "AM":
         canvas.create_text(
