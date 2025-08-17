@@ -7,9 +7,9 @@ from io import BytesIO
 import ctypes
 
 
-#---------- NOTES -----------------
+# ----------------- NOTES -----------------
 # USE 6-DIGIT HEX FOR COLORS
-# REPLACE THE API KEY WITH YOUR OWN API KEY
+# REPLACE THE API KEY WITH YOUR OWN API KEY 
 # GET A API KEY FROM https://openweathermap.org/
 
 run_screensaver = False
@@ -29,15 +29,15 @@ IPINFO_API = "http://ip-api.com/json/"
 LAT, LON, CITY, REGION = 0, 0, "", ""
 
 CLOCK_SIZE = 120        # MAIN CLOCK FONT SIZE
-FONT_FAMILY = "Calibri"         #FONT OF THE OVERALL GUI
-TEMP_FONT = (FONT_FAMILY, 32)       #Replace FONT_FAMILY HERE FOR DIFFERENT FONT FOR TEMPERATURE
-DATE_FONT = (FONT_FAMILY, 30)       #Replace FONT_FAMILY HERE FOR DIFFERENT FONT FOR DATE
+FONT_FAMILY = "Calibri"         # FONT OF THE OVERALL GUI
+TEMP_FONT = (FONT_FAMILY, 32)       # Replace FONT_FAMILY HERE FOR DIFFERENT FONT FOR TEMPERATURE
+DATE_FONT = (FONT_FAMILY, 30)       # Replace FONT_FAMILY HERE FOR DIFFERENT FONT FOR DATE
 
-DATE_COLOR = "white"        #COLOR OF THE DATE ABOVE THE CLOCK    
-WEATHER_COLOR = "white"     #COLOR OF THE WEATHER UNDER THE CLOCK
-CLOCK_COLOR = "white"       #COLOR OF THE CLOCK
-AM_COLOR = "#a2a8ff"       #COLOR FOR AFTER MERIDIAN
-PM_COLOR = "#37c0f7"       #COLOR FOR POST MERIDIAN
+DATE_COLOR = "white"        # COLOR OF THE DATE ABOVE THE CLOCK    
+WEATHER_COLOR = "white"     # COLOR OF THE WEATHER UNDER THE CLOCK
+CLOCK_COLOR = "white"       # COLOR OF THE CLOCK
+AM_COLOR = "#a2a8ff"       # COLOR FOR AFTER MERIDIAN
+PM_COLOR = "#37c0f7"       # COLOR FOR POST MERIDIAN
 
 if len(sys.argv) > 1:
     arg = sys.argv[1].lower()
@@ -140,7 +140,8 @@ def draw_clock_text():
             text=ampm, 
             fill=AM_COLOR,
             font=(FONT_FAMILY, CLOCK_SIZE),
-            anchor="w", tags="clock"
+            anchor="w", 
+            tags="clock"
         )
     elif ampm == "PM":
         canvas.create_text(
@@ -148,11 +149,11 @@ def draw_clock_text():
             text=ampm, 
             fill=PM_COLOR,
             font=(FONT_FAMILY, CLOCK_SIZE),
-            anchor="w", tags="clock"
+            anchor="w", 
+            tags="clock"
         )
 
     if current_weather != "Weather N/A":
-        
         text_width = canvas.create_text(0, 0, text=current_weather, font=TEMP_FONT, tags="measure")
         bbox = canvas.bbox(text_width)
         canvas.delete("measure")
