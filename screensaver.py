@@ -28,7 +28,7 @@ root.config(cursor="none")
 canvas = tk.Canvas(root, bg="black", highlightthickness=0)
 canvas.pack(fill="both", expand=True)
 
-API_KEY = ""
+API_KEY = ""        # YOUR API KEY
 IPINFO_API = "http://ip-api.com/json/"
 LAT, LON, CITY, REGION = 0, 0, "", ""
 
