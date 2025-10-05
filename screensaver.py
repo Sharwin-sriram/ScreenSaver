@@ -6,14 +6,13 @@ from PIL import Image, ImageTk
 from io import BytesIO
 import ctypes
 
+API_KEY = ""        # YOUR API KEY
 
 # ----------------- NOTES -----------------
 # USE 6-DIGIT HEX FOR COLORS
 # REPLACE THE API KEY WITH YOUR OWN API KEY 
 # GET A API KEY FROM https://openweathermap.org/
 
-
-# ----------------- DONT CHANGE -----------------
 run_screensaver = False
 preview_mode = False
 preview_hwnd = None
@@ -28,7 +27,6 @@ root.config(cursor="none")
 canvas = tk.Canvas(root, bg="black", highlightthickness=0)
 canvas.pack(fill="both", expand=True)
 
-API_KEY = ""        # YOUR API KEY
 IPINFO_API = "http://ip-api.com/json/"
 LAT, LON, CITY, REGION = 0, 0, "", ""
 
@@ -59,7 +57,7 @@ if len(sys.argv) > 1:
             except ValueError:
                 sys.exit()
 else:
-    sys.exit()          # CHANGE THIS TO - run_screensaver = True //FOR TESTING
+    run_screensaver = False          # CHANGE THIS TO - run_screensaver = True //FOR TESTING
 if not run_screensaver:
     sys.exit()
     
@@ -188,9 +186,7 @@ def update_weather():
 root.bind("<Escape>", lambda e: sys.exit())
 root.bind("<Button>", lambda e: sys.exit())
 root.bind("<Motion>", lambda e: sys.exit())
-root.bind("<Escape>", lambda e: root.destroy())
-root.bind("<Button>", lambda e: root.destroy())
-root.bind("<Motion>", lambda e: root.destroy())
+root.bind("<Key>", lambda e: sys.exit())
 
 current_weather = get_weather()
 draw_clock_text()
