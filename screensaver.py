@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 from io import BytesIO
 import ctypes
 
-API_KEY = ""        # YOUR API KEY
+API_KEY = "1470f755c3a3451bd408d3edc918ce74"        # YOUR API KEY
 
 # ----------------- NOTES -----------------
 # USE 6-DIGIT HEX FOR COLORS
@@ -38,8 +38,8 @@ DATE_FONT = (FONT_FAMILY, 30)       # Replace FONT_FAMILY HERE FOR DIFFERENT FON
 DATE_COLOR = "white"        # COLOR OF THE DATE ABOVE THE CLOCK    
 WEATHER_COLOR = "white"     # COLOR OF THE WEATHER UNDER THE CLOCK
 CLOCK_COLOR = "white"       # COLOR OF THE CLOCK
-AM_COLOR = "#a2a8ff"       # COLOR FOR AFTER MERIDIAN
-PM_COLOR = "#37c0f7"       # COLOR FOR POST MERIDIAN
+AM_COLOR = "#37c0f7"       # COLOR FOR AFTER MERIDIAN
+PM_COLOR = "#f7a737"       # COLOR FOR POST MERIDIAN
 
 
 if len(sys.argv) > 1:
@@ -57,7 +57,7 @@ if len(sys.argv) > 1:
             except ValueError:
                 sys.exit()
 else:
-    run_screensaver = False          # CHANGE THIS TO - run_screensaver = True //FOR TESTING
+    run_screensaver = True          # CHANGE THIS TO - run_screensaver = True //FOR TESTING
 if not run_screensaver:
     sys.exit()
     
@@ -67,8 +67,6 @@ if preview_mode and preview_hwnd:
 else:
     root.attributes("-fullscreen", True)
 
-
-
 try:
     ipinfo = requests.get(IPINFO_API, timeout=5)
     data = ipinfo.json()
@@ -77,6 +75,40 @@ try:
     CITY, REGION = data.get("city","Unknown"), data.get("regionName", "")
 except:
     LAT, LON, CITY, REGION = 0, 0, "Unknown", ""
+import random
+from PIL import Image, ImageDraw, ImageFont, ImageTk
+
+def create_pm_gradient_text(text="PM", font_size=120):
+    width = 180
+    height = font_size + 20
+    img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
+    draw = ImageDraw.Draw(img)
+
+    # Gradient colors
+    top_color = (20, 40, 130)
+    bottom_color = (5, 5, 40)
+
+    # Create gradient background
+    for y in range(height):
+        ratio = y / height
+        r = int(top_color[0] * (1-ratio) + bottom_color[0] * ratio)
+        g = int(top_color[1] * (1-ratio) + bottom_color[1] * ratio)
+        b = int(top_color[2] * (1-ratio) + bottom_color[2] * ratio)
+        draw.line([(0, y), (width, y)], fill=(r, g, b))
+
+    # Add tiny twinkling stars
+    for _ in range(50):
+        sx, sy = random.randint(0, width-1), random.randint(0, height-1)
+        draw.point((sx, sy), fill=(255, 255, 255, random.randint(150, 255)))
+
+    # Draw the PM text in white
+    font = ImageFont.truetype("calibri.ttf", font_size)
+    text_w, text_h = draw.textsize(text, font=font)
+    text_x = (width - text_w) // 2
+    text_y = (height - text_h) // 2
+    draw.text((text_x, text_y), text, font=font, fill="white")
+
+    return ImageTk.PhotoImage(img)
 
 def get_weather():
     global weather_icon
@@ -100,6 +132,11 @@ def get_weather():
 
 def draw_clock_text():
     canvas.delete("clock")
+    
+    H = time.strftime("%I")
+    if int(H) > 7:
+        PM_COLOR = "#0000A8"
+
     now = time.strftime("%I:%M")
     ampm = time.strftime("%p")
     date = time.strftime("%a, %d %b")
