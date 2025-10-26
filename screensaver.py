@@ -6,7 +6,7 @@ from PIL import Image, ImageTk
 from io import BytesIO
 import ctypes
 
-API_KEY = "1470f755c3a3451bd408d3edc918ce74"        # YOUR API KEY
+API_KEY = ""        # YOUR API KEY
 
 # ----------------- NOTES -----------------
 # USE 6-DIGIT HEX FOR COLORS
