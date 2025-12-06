@@ -1,5 +1,7 @@
 import sys
+import os
 import tkinter as tk
+from tkinter import filedialog, messagebox
 import time
 import requests
 from PIL import Image, ImageTk
@@ -17,12 +19,18 @@ run_screensaver = False
 preview_mode = False
 preview_hwnd = None
 weather_icon = None
+bg_image = None
+BACKGROUND_NIGHT_PATH = ""
+# BACKGROUND_NIGHT_PATH = "G:\\projects\ScreenSaver\\nightsky.jpg"
+BACKGROUND_DAY_PATH = ""
+# BACKGROUND_DAY_PATH = "G:\\projects\\ScreenSaver\\Sunset.png"
 
 
 # ----------------- ROOT CONFIG -----------------
 root = tk.Tk()
 root.configure(bg="black")
 root.config(cursor="none")
+
 
 canvas = tk.Canvas(root, bg="black", highlightthickness=0)
 canvas.pack(fill="both", expand=True)
@@ -67,6 +75,31 @@ if preview_mode and preview_hwnd:
 else:
     root.attributes("-fullscreen", True)
 
+
+def load_background_for_time():
+    global bg_image
+    hour = int(time.strftime("%H"))
+
+    screen_w = root.winfo_screenwidth()
+    screen_h = root.winfo_screenheight()
+    
+    if BACKGROUND_DAY_PATH == '' or BACKGROUND_NIGHT_PATH == '':
+        return
+    
+    if hour >= 19 or hour < 6:
+        img = Image.open(BACKGROUND_NIGHT_PATH)
+    else:
+        img = Image.open(BACKGROUND_DAY_PATH)
+        
+    img = img.resize((screen_w, screen_h), Image.LANCZOS)
+    bg_image = ImageTk.PhotoImage(img)
+
+def update_background():
+    load_background_for_time()
+    root.after(60000, update_background)
+
+update_background()
+
 try:
     ipinfo = requests.get(IPINFO_API, timeout=5)
     data = ipinfo.json()
@@ -75,48 +108,16 @@ try:
     CITY, REGION = data.get("city","Unknown"), data.get("regionName", "")
 except:
     LAT, LON, CITY, REGION = 0, 0, "Unknown", ""
-import random
-from PIL import Image, ImageDraw, ImageFont, ImageTk
-
-def create_pm_gradient_text(text="PM", font_size=120):
-    width = 180
-    height = font_size + 20
-    img = Image.new("RGBA", (width, height), (0, 0, 0, 0))
-    draw = ImageDraw.Draw(img)
-
-    # Gradient colors
-    top_color = (20, 40, 130)
-    bottom_color = (5, 5, 40)
-
-    # Create gradient background
-    for y in range(height):
-        ratio = y / height
-        r = int(top_color[0] * (1-ratio) + bottom_color[0] * ratio)
-        g = int(top_color[1] * (1-ratio) + bottom_color[1] * ratio)
-        b = int(top_color[2] * (1-ratio) + bottom_color[2] * ratio)
-        draw.line([(0, y), (width, y)], fill=(r, g, b))
-
-    # Add tiny twinkling stars
-    for _ in range(50):
-        sx, sy = random.randint(0, width-1), random.randint(0, height-1)
-        draw.point((sx, sy), fill=(255, 255, 255, random.randint(150, 255)))
-
-    # Draw the PM text in white
-    font = ImageFont.truetype("calibri.ttf", font_size)
-    text_w, text_h = draw.textsize(text, font=font)
-    text_x = (width - text_w) // 2
-    text_y = (height - text_h) // 2
-    draw.text((text_x, text_y), text, font=font, fill="white")
-
-    return ImageTk.PhotoImage(img)
 
 def get_weather():
     global weather_icon
     try:
         URL = f"https://api.openweathermap.org/data/2.5/weather?lat={LAT}&lon={LON}&appid={API_KEY}&units=metric"
         response = requests.get(URL, timeout=5)
+        print(response.json())
         data = response.json()
         if data.get("cod") != 200:
+            print(data.get("cod"))
             return "Weather N/A"
         temp = data["main"]["temp"]
         icon_code = data["weather"][0]["icon"]
@@ -132,10 +133,16 @@ def get_weather():
 
 def draw_clock_text():
     canvas.delete("clock")
-    
-    H = time.strftime("%I")
-    if int(H) > 7:
-        PM_COLOR = "#0000A8"
+    canvas.create_image(
+        0, 0,
+        image=bg_image,
+        anchor="nw",
+        tags="background"
+    )
+    H = time.strftime("%H")
+
+    # if int(H) > 19:
+    #     PM_COLOR = "#3831ff"
 
     now = time.strftime("%I:%M")
     ampm = time.strftime("%p")
@@ -175,6 +182,7 @@ def draw_clock_text():
         anchor="w", 
         tags="clock"
     )
+    
     if ampm == "AM":
         canvas.create_text(
             start_x + time_w + 20, y,
@@ -227,5 +235,6 @@ root.bind("<Key>", lambda e: sys.exit())
 
 current_weather = get_weather()
 draw_clock_text()
+load_background_for_time()
 update_weather()
 root.mainloop()
